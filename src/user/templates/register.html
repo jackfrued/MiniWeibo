@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>欢迎注册！</h1>
+<hr>
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>提示：</strong>{{ error }}
+</div>
+{% endif %}
+
+<form class="form-horizontal" action="/user/register" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">昵称：</label>
+        <div class="col-sm-5">
+            <input class="form-control" type="text" name="nickname" placeholder="请输入昵称">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">密码：</label>
+        <div class="col-sm-5">
+            <input class="form-control" type="password" name="password" placeholder="请输入密码">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">性别：</label>
+        <div class="col-sm-5">
+            <label class="radio-inline">
+                <input type="radio" name="gender" value="male"> 男
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="gender" value="female"> 女
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">城市：</label>
+        <div class="col-sm-5">
+            <select name="city" class="form-control">
+                <option value="北京">北京</option>
+                <option value="上海">上海</option>
+                <option value="深圳">深圳</option>
+                <option value="成都">成都</option>
+                <option value="西安">西安</option>
+                <option value="武汉">武汉</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">头像：</label>
+        <div class="col-sm-5">
+            <input type="file" name="avatar">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">生日：</label>
+        <div class="col-sm-5">
+            <input class="form-control" type="date" name="birthday">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">个人简介：</label>
+        <div class="col-sm-8">
+            <textarea  class="form-control" name="bio" rows="5" placeholder="请输入昵称"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-5">
+            <button type="submit" class="btn btn-primary">注册</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
