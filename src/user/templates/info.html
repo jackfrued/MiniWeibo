@@ -19,10 +19,10 @@
 
 <div class="jumbotron">
     <img src="{{ user.avatar }}">
-    <br>
+    <hr>
     <ul class="list-group list-group-flush">
         <li class="list-group-item item">昵称：{{ user.nickname }}</li>
-        <li class="list-group-item item">性别：{{ user.gender }}</li>
+        <li class="list-group-item item">性别：{{ '帅哥' if user.gender == 'male' else '美女' }}</li>
         <li class="list-group-item item">生日：{{ user.birthday }}</li>
         <li class="list-group-item item">城市：{{ user.city }}</li>
         <li class="list-group-item item">简介：{{ user.bio }}</li>
