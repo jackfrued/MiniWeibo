@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+<!-- 扩展 CSS -->
+{% block ext_css %}
+<style>
+    .item {
+        background-color: transparent;
+    }
+    .follow {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>个人信息</h1>
+<hr>
+
+<div class="jumbotron">
+    <img src="{{ user.avatar }}">
+    <br>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item item">昵称：{{ user.nickname }}</li>
+        <li class="list-group-item item">性别：{{ user.gender }}</li>
+        <li class="list-group-item item">生日：{{ user.birthday }}</li>
+        <li class="list-group-item item">城市：{{ user.city }}</li>
+        <li class="list-group-item item">简介：{{ user.bio }}</li>
+        <li class="list-group-item item">创建日期：{{ user.created }}</li>
+    </ul>
+</div>
+
+{% endblock %}

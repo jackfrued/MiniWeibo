@@ -4,6 +4,7 @@ from flask import Blueprint
 from flask import request
 from flask import render_template
 from flask import redirect
+from flask import session
 from sqlalchemy.exc import IntegrityError
 
 from libs.db import db
@@ -64,18 +65,38 @@ def register():
 def login():
     '''登陆页面'''
     if request.method == 'POST':
-        pass
+        nickname = request.form.get('nickname', '').strip()
+        password = request.form.get('password', '').strip()
+
+        user = User.query.filter_by(nickname=nickname).first()
+        if user is None:
+            return render_template('login.html', error='用户名有误，请重新输入')
+        if check_password(password, user.password):
+            # 记录用户登陆状态
+            session['uid'] = user.id
+            return redirect('/user/info')
+        else:
+            return render_template('login.html', error='密码有误，请重新输入')
     else:
-        return render_template('login.html')
+        if 'uid' in session:
+            return redirect('/user/info')
+        else:
+            return render_template('login.html')
 
 
 @user_bp.route('/logout')
 def logout():
     '''退出'''
-    pass
+    session.pop('uid')
+    return redirect('/')
 
 
 @user_bp.route('/info')
 def info():
     '''用户个人资料页'''
-    pass
+    uid = session.get('uid')
+    if uid:
+        user = User.query.get(uid)
+        return render_template('info.html', user=user)
+    else:
+        return render_template('login.html', error='请先登录！')
