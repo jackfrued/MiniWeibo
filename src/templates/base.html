@@ -28,13 +28,16 @@
                         <li {% if request.path == '/' %}class="active"{% endif %}>
                             <a href="/">首页</a>
                         </li>
-                        <li {% if request.path == '/user/info' %}class="active"{% endif %}>
-                            <a href="/user/info">个人信息</a>
+                        <li {% if request.path == '/weibo/post' %}class="active"{% endif %}>
+                            <a href="/weibo/post">发表微博</a>
                         </li>
                         <li><a href="#">热门排行</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if 'uid' in session %}
+                        <li {% if request.path == '/user/info' %}class="active"{% endif %}>
+                            <a href="/user/info">个人信息</a>
+                        </li>
                         <li><a href="/user/logout">退出</a></li>
                         {% else %}
                         <li><a href="/user/register">注册</a></li>

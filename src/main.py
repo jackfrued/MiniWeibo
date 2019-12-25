@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from flask import Flask
+from flask import redirect
 from flask import render_template
 
 from libs.db import db
@@ -16,12 +17,15 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return render_template('base.html')
+    return redirect('/weibo/')
 
 
 if __name__ == '__main__':
     from user import user_bp
     app.register_blueprint(user_bp, url_prefix='/user')
+
+    from weibo import weibo_bp
+    app.register_blueprint(weibo_bp, url_prefix='/weibo')
 
     app.debug = True
     app.run()

@@ -6,6 +6,7 @@ from flask_migrate import Migrate, MigrateCommand
 from main import app
 from libs.db import db
 from user.models import User
+from weibo.models import Weibo
 
 db.init_app(app)
 

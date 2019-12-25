@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>发布微博</h1>
+<hr>
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+    <strong>提示：</strong>{{ error }}
+</div>
+{% endif %}
+
+<form class="form-horizontal" action="/weibo/post" method="POST">
+    <div class="form-group">
+        <div class="col-sm-12">
+            <textarea  class="form-control" name="content" rows="5" placeholder="请在此输入"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-11">
+            <button type="submit" class="btn btn-primary">发布</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
