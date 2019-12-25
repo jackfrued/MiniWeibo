@@ -9,8 +9,13 @@
 </div>
 
 <div class="text-right">
-    <span style="color: gray;">{{ weibo.created }}</span>
+    <span style="color: gray;">{{ weibo.updated }}</span>
+    {% if 'uid' in session and session['uid'] == weibo.uid %}
+    <a href="/weibo/edit?wid={{ weibo.id }}">编辑</a>
+    <a href="/weibo/delete?wid={{ weibo.id }}">删除</a>
+    {% endif %}
 </div>
+
 <hr>
 
 <div class="text-right">

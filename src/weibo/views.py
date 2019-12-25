@@ -1,3 +1,5 @@
+import datetime
+
 from flask import request
 from flask import session
 from flask import redirect
@@ -29,6 +31,7 @@ def post():
             return render_template('post.html', error='微博内容不允许为空！')
         else:
             weibo = Weibo(uid=session['uid'], content=content)
+            weibo.updated = datetime.datetime.now()
             db.session.add(weibo)
             db.session.commit()
             return redirect('/weibo/show?wid=%s' % weibo.id)
@@ -38,7 +41,22 @@ def post():
 
 @weibo_bp.route('/edit')
 def edit():
-    return render_template('edit.html')
+    if request.method == 'POST':
+        wid = int(request.form.get('wid'))
+        content = request.form.get('content').strip()
+        if not content:
+            return render_template('post.html', error='微博内容不允许为空！')
+        else:
+            weibo = Weibo.query.get(wid)
+            weibo.content = content
+            weibo.updated = datetime.datetime.now()
+            db.session.add(weibo)
+            db.session.commit()
+            return redirect('/weibo/show?wid=%s' % weibo.id)
+    else:
+        wid = int(request.args.get('wid'))
+        weibo = Weibo.query.get(wid)
+        return render_template('edit.html', weibo=weibo)
 
 
 @weibo_bp.route('/show')
