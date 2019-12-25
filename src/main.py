@@ -28,4 +28,4 @@ if __name__ == '__main__':
     app.register_blueprint(weibo_bp, url_prefix='/weibo')
 
     app.debug = True
-    app.run()
+    app.run(host='0.0.0.0', port=80)

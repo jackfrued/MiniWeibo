@@ -1,5 +1,16 @@
-import datetime
+'''
+后端开发者在处理参数时的原则:
+1. 后端不要依赖前端页面的检查
+2. 前端传来的所有数据对后端来说都不可信
+3. 所有的数据都必须做检查
+4. 后端能自己获取的数据不要依赖前端
+5. 接口的参数和返回值能少则少，不要一次传递太多数据
+'''
 
+import datetime
+from math import ceil
+
+from flask import abort
 from flask import request
 from flask import session
 from flask import redirect
@@ -18,8 +29,22 @@ weibo_bp.template_folder = './templates'
 @weibo_bp.route('/')
 @weibo_bp.route('/index')
 def index():
-    '''显示全部微博'''
-    return render_template('index.html')
+    '''显示最新的前 50 条微博'''
+    # 获取微博数据
+    page = int(request.args.get('page', 1))
+    n_per_page = 10
+    offset = (page - 1) * n_per_page
+    # 当前页要显示的微博
+    # select * from weibo order by updated desc limit 10 offset 20;
+    wb_list = Weibo.query.order_by(Weibo.updated.desc()).limit(10).offset(offset)
+    n_weibo = Weibo.query.count()  # 微博总数
+    n_page = 5 if n_weibo >= 50 else ceil(n_weibo / n_per_page)  # 总页数
+
+    # 获取微博对应的作者
+    uid_list = {wb.uid for wb in wb_list}  # 取出微博对应的用户 ID
+    # select id, nickname from user id in ...;
+    users = dict(User.query.filter(User.id.in_(uid_list)).values('id', 'nickname'))
+    return render_template('index.html', page=page, n_page=n_page, wb_list=wb_list, users=users)
 
 
 @weibo_bp.route('/post', methods=('POST', 'GET'))
@@ -40,6 +65,7 @@ def post():
 
 
 @weibo_bp.route('/edit')
+@login_required
 def edit():
     if request.method == 'POST':
         wid = int(request.form.get('wid'))
@@ -63,10 +89,17 @@ def edit():
 def show():
     wid = int(request.args.get('wid'))
     weibo = Weibo.query.get(wid)
-    user = User.query.get(weibo.uid)
-    return render_template('show.html', weibo=weibo, user=user)
+    if weibo is None:
+        abort(404)
+    else:
+        user = User.query.get(weibo.uid)
+        return render_template('show.html', weibo=weibo, user=user)
 
 
 @weibo_bp.route('/delete')
+@login_required
 def delete():
-    return render_template('delete.html')
+    wid = int(request.args.get('wid'))
+    Weibo.query.filter_by(id=wid).delete()
+    db.session.commit()
+    return redirect('/')
