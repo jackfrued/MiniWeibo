@@ -28,9 +28,10 @@ def comment():
 def reply():
     uid = session['uid']
     wid = int(request.form.get('wid'))
-    cid = int(request.form.get('cid'))
+    cid = int(request.form.get('cid'))  # 主评论的id
+    rid = int(request.form.get('rid'))  # 回复的id
     content = request.form.get('content')
-    cmt = Comment(uid=uid, wid=wid, cid=cid, content=content)
+    cmt = Comment(uid=uid, wid=wid, cid=cid, rid=rid, content=content)
     db.session.add(cmt)
     db.session.commit()
     return redirect('/weibo/show?wid=%s' % wid)
@@ -48,6 +49,7 @@ def delete():
 
     if cmt.cid == 0:
         Comment.query.filter_by(cid=cmt.id).delete()
+
     db.session.delete(cmt)
     db.session.commit()
 
