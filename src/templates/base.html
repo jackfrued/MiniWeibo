@@ -8,6 +8,16 @@
 
         <style>
             body { padding-top: 50px; }
+
+            textarea { resize: none }
+
+            .text-gray {
+                color: #777;
+            }
+
+            .transparent-bg {
+                background-color: transparent;
+            }
         </style>
         {% block ext_css %}{% endblock %}
     </head>
@@ -25,7 +35,7 @@
 
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li {% if request.path == '/' %}class="active"{% endif %}>
+                        <li {% if request.path == '/weibo/' %}class="active"{% endif %}>
                             <a href="/">首页</a>
                         </li>
                         <li {% if request.path == '/weibo/post' %}class="active"{% endif %}>

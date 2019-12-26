@@ -94,7 +94,7 @@ def logout():
 @user_bp.route('/info')
 def info():
     '''用户个人资料页'''
-    uid = session.get('uid')
+    uid = int(request.args.get('uid', 0)) or session.get('uid')
     if uid:
         user = User.query.get(uid)
         return render_template('info.html', user=user)
