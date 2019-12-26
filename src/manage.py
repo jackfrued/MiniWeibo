@@ -11,6 +11,7 @@ from main import app
 from libs.db import db
 from user.models import User
 from weibo.models import Weibo
+from comment.models import Comment
 from libs.utils import gen_password
 
 db.init_app(app)

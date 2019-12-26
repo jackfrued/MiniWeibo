@@ -27,5 +27,8 @@ if __name__ == '__main__':
     from weibo import weibo_bp
     app.register_blueprint(weibo_bp, url_prefix='/weibo')
 
+    from comment import comment_bp
+    app.register_blueprint(comment_bp, url_prefix='/comment')
+
     app.debug = True
     app.run(host='0.0.0.0', port=80)

@@ -64,7 +64,7 @@ def post():
         return render_template('post.html')
 
 
-@weibo_bp.route('/edit')
+@weibo_bp.route('/edit', methods=('POST', 'GET'))
 @login_required
 def edit():
     if request.method == 'POST':
@@ -74,6 +74,8 @@ def edit():
             return render_template('post.html', error='微博内容不允许为空！')
         else:
             weibo = Weibo.query.get(wid)
+            if weibo.uid != session['uid']:
+                abort(403)
             weibo.content = content
             weibo.updated = datetime.datetime.now()
             db.session.add(weibo)
@@ -100,6 +102,10 @@ def show():
 @login_required
 def delete():
     wid = int(request.args.get('wid'))
-    Weibo.query.filter_by(id=wid).delete()
-    db.session.commit()
+    weibo = Weibo.query.get(wid)
+    if weibo.uid != session['uid']:
+        abort(403)
+    else:
+        db.session.delete(weibo)
+        db.session.commit()
     return redirect('/')
