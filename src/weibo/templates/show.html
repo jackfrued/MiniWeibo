@@ -9,6 +9,7 @@
 </div>
 
 <div class="text-right">
+    <span class="label label-primary">点赞</span>
     <span style="color: gray;">{{ weibo.updated }}</span>
     {% if 'uid' in session and session['uid'] == weibo.uid %}
     <a href="/weibo/edit?wid={{ weibo.id }}">编辑</a>
@@ -18,8 +19,39 @@
 
 <hr>
 
-<div class="text-right">
-    <span class="label label-primary">点赞</span>
-    <span class="label label-warning">评论</span>
+<form class="form-horizontal" action="/comment/post" method="POST">
+    <div class="form-group">
+        <div class="col-sm-12">
+            <textarea  class="form-control" name="content" rows="5" placeholder="请在此输入"></textarea>
+        </div>
+    </div>
+
+    <input type="hidden" name="wid" value="{{ weibo.id }}">
+
+    <div class="form-group">
+        <div class="col-sm-offset-11">
+            <button type="submit" class="btn btn-primary">评论</button>
+        </div>
+    </div>
+</form>
+
+<hr>
+
+{% for cmt_id, cmt in comments.items() %}
+<div>
+    {% if cmt.cid == 0 %}
+    <span>{{ cmt_users[cmt.uid] }}: {{ cmt.content }}</span>
+    {% else %}
+    <span>{{ cmt_users[cmt.uid] }} @ {{ cmt_users[comments[cmt.rid].uid] }}: {{ cmt.content }}</span>
+    {% endif %}
+    <form action="/comment/reply" method="POST">
+        <input type="text" name="content">
+        <input type="hidden" name="wid" value="{{ cmt.wid }}">
+        <input type="hidden" name="cid" value="{{ cmt.cid or cmt.id }}">
+        <input type="hidden" name="rid" value="{{ cmt.id }}">
+        <input type="submit">
+    </form>
 </div>
+{% endfor %}
+
 {% endblock %}

@@ -9,6 +9,7 @@
 
 import datetime
 from math import ceil
+from collections import OrderedDict
 
 from flask import abort
 from flask import request
@@ -19,6 +20,7 @@ from flask import render_template
 
 from .models import Weibo
 from user.models import User
+from comment.models import Comment
 from libs.db import db
 from user.logics import login_required
 
@@ -95,7 +97,13 @@ def show():
         abort(404)
     else:
         user = User.query.get(weibo.uid)
-        return render_template('show.html', weibo=weibo, user=user)
+
+        # 获取当前微博的所有评论
+        comments = Comment.query.filter_by(wid=weibo.id).order_by(Comment.created.desc())
+        all_uid = {c.uid for c in comments}  # 所有评论的作者的 ID
+        cmt_users = dict(User.query.filter(User.id.in_(all_uid)).values('id', 'nickname'))
+        comments = OrderedDict([[cmt.id, cmt] for cmt in comments])  # 将所有评论转成有序字典
+        return render_template('show.html', weibo=weibo, user=user, cmt_users=cmt_users, comments=comments)
 
 
 @weibo_bp.route('/delete')

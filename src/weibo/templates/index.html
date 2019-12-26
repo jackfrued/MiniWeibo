@@ -20,7 +20,7 @@
 <div class="text-right">
     <span style="color: gray;">{{ wb.updated }}</span>
     <span class="label label-primary">点赞</span>
-    <span class="label label-warning">评论</span>
+    <a href="/weibo/show?wid={{ wb.id }}"><span class="label label-warning">查看</span></a>
     {% if 'uid' in session and session['uid'] == wb.uid %}
     <a href="/weibo/edit?wid={{ wb.id }}">编辑</a>
     <a href="/weibo/delete?wid={{ wb.id }}">删除</a>
