@@ -139,4 +139,5 @@ def like():
         Weibo.query.filter_by(id=wid).update({'n_like': Weibo.n_like - 1})
         db.session.commit()
 
-    return redirect('/weibo/show?wid=%s' % wid)
+    last_url = request.referrer or '/weibo/show?wid=%s' % wid
+    return redirect(last_url)
