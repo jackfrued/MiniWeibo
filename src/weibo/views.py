@@ -163,3 +163,16 @@ def like():
 
     last_url = request.referrer or '/weibo/show?wid=%s' % wid
     return redirect(last_url)
+
+
+@weibo_bp.route('/top50')
+def top50():
+    '''最近一个月的热门微博'''
+    now = datetime.datetime.now()
+    start = now - datetime.timedelta(30)
+    wb_list = Weibo.query.filter(Weibo.created > start).order_by(Weibo.n_like.desc()).limit(50)
+
+    # 获取微博对应的作者
+    uid_list = {wb.uid for wb in wb_list}  # 取出微博对应的用户 ID
+    users = dict(User.query.filter(User.id.in_(uid_list)).values('id', 'nickname'))
+    return render_template('top50.html', wb_list=wb_list, users=users)

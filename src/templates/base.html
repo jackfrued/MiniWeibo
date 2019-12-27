@@ -44,7 +44,9 @@
                         <li {% if request.path == '/weibo/post' %}class="active"{% endif %}>
                             <a href="/weibo/post">发表微博</a>
                         </li>
-                        <li><a href="#">热门排行</a></li>
+                        <li {% if request.path == '/weibo/top50' %}class="active"{% endif %}>
+                            <a href="/weibo/top50">热门排行</a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if 'uid' in session %}
