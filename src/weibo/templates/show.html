@@ -27,13 +27,13 @@
 
 <!-- 微博状态 -->
 <div class="breadcrumb text-right transparent-bg">
-    <li class="active">{{ weibo.updated }}</li>
+    <li class="active">{{ weibo.created }}</li>
 
     <li>
-        <a class="btn btn-success btn-xs" href="#">
+        <a class="btn btn-success btn-xs" href="/weibo/like?wid={{ weibo.id }}">
             <span class="glyphicon glyphicon-heart"></span>
             &nbsp;
-            <span class="badge">4</span>
+            <span class="badge">{{ weibo.n_like }}</span>
         </a>
     </li>
 </div>

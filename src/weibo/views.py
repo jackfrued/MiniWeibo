@@ -17,8 +17,11 @@ from flask import session
 from flask import redirect
 from flask import Blueprint
 from flask import render_template
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 
 from .models import Weibo
+from .models import Like
 from user.models import User
 from comment.models import Comment
 from libs.db import db
@@ -117,3 +120,23 @@ def delete():
         db.session.delete(weibo)
         db.session.commit()
     return redirect('/')
+
+
+@weibo_bp.route('/like')
+@login_required
+def like():
+    uid = session['uid']
+    wid = int(request.args.get('wid'))
+
+    lk = Like(uid=uid, wid=wid)
+    db.session.add(lk)
+    try:
+        Weibo.query.filter_by(id=wid).update({'n_like': Weibo.n_like + 1})
+        db.session.commit()
+    except (FlushError, IntegrityError):
+        db.session.rollback()
+        Like.query.filter_by(uid=uid, wid=wid).delete()
+        Weibo.query.filter_by(id=wid).update({'n_like': Weibo.n_like - 1})
+        db.session.commit()
+
+    return redirect('/weibo/show?wid=%s' % wid)

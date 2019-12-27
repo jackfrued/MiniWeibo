@@ -11,6 +11,7 @@ from main import app
 from libs.db import db
 from user.models import User
 from weibo.models import Weibo
+from weibo.models import Like
 from comment.models import Comment
 from libs.utils import gen_password
 
@@ -25,6 +26,17 @@ def rand_content(n_words=10):
     rand_word = lambda: ''.join(random.sample(ascii_lowercase, random.randint(3, 5)))
     rand_content = ' '.join([rand_word() for i in range(n_words)])
     return rand_content.capitalize()
+
+
+@manager.command
+def fix_n_like():
+    '''修正所有的微博点赞数'''
+    like_list = dict(Weibo.query.filter(Weibo.id>0).values('id', 'n_like'))
+    wid_list = str(tuple(like_list.keys()))
+    result = db.session.execute('select wid, count(1) from `like` where wid in %s group by wid' % wid_list)
+    for wid, n_like in result:
+        Weibo.query.filter_by(id=wid).update({'n_like': n_like})
+    db.session.commit()
 
 
 @manager.command

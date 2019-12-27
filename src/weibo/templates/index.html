@@ -33,13 +33,13 @@
 </div>
 
 <div class="breadcrumb text-right transparent-bg">
-    <li class="active">{{ wb.updated }}</li>
+    <li class="active">{{ wb.created }}</li>
 
     <li>
-        <a class="btn btn-success btn-xs" href="#">
+        <a class="btn btn-success btn-xs" href="/weibo/like?wid={{ wb.id }}">
             <span class="glyphicon glyphicon-heart"></span>
             &nbsp;
-            <span class="badge">4</span>
+            <span class="badge">{{ wb.n_like }}</span>
         </a>
     </li>
 
