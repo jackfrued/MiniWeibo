@@ -2,15 +2,19 @@ import datetime
 
 from flask import Blueprint
 from flask import request
+from flask import abort
 from flask import render_template
 from flask import redirect
 from flask import session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 
 from libs.db import db
 from libs.utils import gen_password, check_password
 from .models import User
+from .models import Follow
 from .logics import save_avatar
+from .logics import login_required
 
 user_bp = Blueprint('user', import_name='user')
 user_bp.template_folder = './templates'
@@ -85,6 +89,7 @@ def login():
 
 
 @user_bp.route('/logout')
+@login_required
 def logout():
     '''退出'''
     session.pop('uid')
@@ -94,9 +99,44 @@ def logout():
 @user_bp.route('/info')
 def info():
     '''用户个人资料页'''
-    uid = int(request.args.get('uid', 0)) or session.get('uid')
-    if uid:
+    uid = session.get('uid')
+    fid = int(request.args.get('uid', 0))
+
+    # 查看自己页面
+    if uid == fid or fid == 0:
         user = User.query.get(uid)
         return render_template('info.html', user=user)
-    else:
-        return render_template('login.html', error='请先登录！')
+
+    # 查看其他人的页面
+    if fid and uid != fid:
+        user = User.query.get(fid)
+        is_exist = Follow.query.filter_by(uid=uid, fid=fid).exists()
+        followed = db.session.query(is_exist).scalar()
+        return render_template('info.html', user=user, followed=followed)
+
+    return render_template('login.html', error='请先登录！')
+
+
+@user_bp.route('/follow')
+@login_required
+def follow():
+    '''关注或取消关注'''
+    uid = session['uid']
+    fid = int(request.args.get('fid'))
+
+    # 过滤自己关注自己的操作
+    if uid == fid:
+        abort(403)
+
+    fw = Follow(uid=uid, fid=fid)
+    db.session.add(fw)
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError):
+        db.session.rollback()
+        # 取消关注
+        Follow.query.filter_by(uid=uid, fid=fid).delete()
+        db.session.commit()
+
+    last_url = request.referrer or '/user/info?uid=%s' % fid
+    return redirect(last_url)

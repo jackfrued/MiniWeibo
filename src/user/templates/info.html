@@ -21,8 +21,19 @@
     <img src="{{ user.avatar }}" width="200px">
     <br>
     <br>
+
     <ul class="list-group list-group-flush">
-        <li class="list-group-item item">昵称：{{ user.nickname }}</li>
+        <li class="list-group-item item">
+            昵称：{{ user.nickname }}
+            {% if user.id != session.uid %}
+                {% if followed %}
+                <a class="btn btn-danger btn-xs" href="/user/follow?fid={{ user.id }}">取消关注</a>
+                {% else %}
+                <a class="btn btn-success btn-xs" href="/user/follow?fid={{ user.id }}">点击关注</a>
+                {% endif %}
+            {% endif %}
+
+        </li>
         <li class="list-group-item item">性别：{{ '帅哥' if user.gender == 'male' else '美女' }}</li>
         <li class="list-group-item item">生日：{{ user.birthday }}</li>
         <li class="list-group-item item">城市：{{ user.city }}</li>

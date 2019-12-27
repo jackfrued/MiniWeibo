@@ -31,4 +31,4 @@ if __name__ == '__main__':
     app.register_blueprint(comment_bp, url_prefix='/comment')
 
     app.debug = True
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='127.0.0.1', port=8000)
