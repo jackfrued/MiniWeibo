@@ -10,6 +10,7 @@ from flask_migrate import Migrate, MigrateCommand
 from main import app
 from libs.db import db
 from user.models import User
+from user.models import Follow
 from weibo.models import Weibo
 from weibo.models import Like
 from comment.models import Comment
