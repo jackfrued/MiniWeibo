@@ -38,6 +38,9 @@
                         <li {% if request.path == '/weibo/' %}class="active"{% endif %}>
                             <a href="/">首页</a>
                         </li>
+                        <li {% if request.path == '/weibo/follow_weibo' %}class="active"{% endif %}>
+                            <a href="/weibo/follow_weibo">关注的微博</a>
+                        </li>
                         <li {% if request.path == '/weibo/post' %}class="active"{% endif %}>
                             <a href="/weibo/post">发表微博</a>
                         </li>

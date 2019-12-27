@@ -23,6 +23,7 @@ from sqlalchemy.orm.exc import FlushError
 from .models import Weibo
 from .models import Like
 from user.models import User
+from user.models import Follow
 from comment.models import Comment
 from libs.db import db
 from user.logics import login_required
@@ -50,6 +51,27 @@ def index():
     # select id, nickname from user id in ...;
     users = dict(User.query.filter(User.id.in_(uid_list)).values('id', 'nickname'))
     return render_template('index.html', page=page, n_page=n_page, wb_list=wb_list, users=users)
+
+
+@weibo_bp.route('/follow_weibo')
+@login_required
+def follow_weibo():
+    uid = session['uid']
+    page = int(request.args.get('page', 1))
+
+    # 获取关注的人的 ID 列表
+    fid_list = [fid for (fid,) in Follow.query.filter_by(uid=uid).values('fid')]
+
+    # 获取微博数据
+    n_per_page = 10
+    offset = (page - 1) * n_per_page
+    wb_list = Weibo.query.filter(Weibo.uid.in_(fid_list)).order_by(Weibo.updated.desc()).limit(10).offset(offset)
+    n_weibo = Weibo.query.filter(Weibo.uid.in_(fid_list)).count()  # 关注的微博总数
+    n_page = 5 if n_weibo >= 50 else ceil(n_weibo / n_per_page)  # 总页数
+
+    # 获取微博对应的作者
+    users = dict(User.query.filter(User.id.in_(fid_list)).values('id', 'nickname'))
+    return render_template('follow_weibo.html', page=page, n_page=n_page, wb_list=wb_list, users=users)
 
 
 @weibo_bp.route('/post', methods=('POST', 'GET'))
