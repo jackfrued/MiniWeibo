@@ -7,6 +7,7 @@ Flask==1.1.1
 Flask-Migrate==2.5.2
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.1
+gunicorn==20.0.4
 ipython==7.10.2
 ipython-genutils==0.2.0
 itsdangerous==1.1.0
