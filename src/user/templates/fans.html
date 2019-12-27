@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+<!-- 扩展 CSS -->
+{% block ext_css %}
+<style>
+    .item {
+        background-color: transparent;
+    }
+    .follow {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>粉丝列表</h1>
+<hr>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>生日</th>
+            <th>城市</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for user in fans %}
+        <tr>
+            <td><a href="/user/info?uid={{ user.id }}">{{ user.nickname }}</a></td>
+            <td>{{ '帅哥' if user.gender == 'male' else '美女' }}</td>
+            <td>{{ user.birthday }}</td>
+            <td>{{ user.city }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

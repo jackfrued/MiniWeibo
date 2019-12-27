@@ -48,6 +48,9 @@
                         <li {% if request.path == '/user/info' %}class="active"{% endif %}>
                             <a href="/user/info">个人信息</a>
                         </li>
+                        <li {% if request.path == '/user/fans' %}class="active"{% endif %}>
+                            <a href="/user/fans">粉丝列表</a>
+                        </li>
                         <li><a href="/user/logout">退出</a></li>
                         {% else %}
                         <li><a href="/user/register">注册</a></li>

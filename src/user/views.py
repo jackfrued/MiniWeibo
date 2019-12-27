@@ -140,3 +140,13 @@ def follow():
 
     last_url = request.referrer or '/user/info?uid=%s' % fid
     return redirect(last_url)
+
+
+@user_bp.route('/fans')
+@login_required
+def fans():
+    '''自己的粉丝列表'''
+    uid = session['uid']
+    fans_uid_list = [uid for (uid,) in Follow.query.filter_by(fid=uid).values('uid')]
+    fans = User.query.filter(User.id.in_(fans_uid_list))
+    return render_template('fans.html', fans=fans)
